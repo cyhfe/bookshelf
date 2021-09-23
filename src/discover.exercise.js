@@ -7,10 +7,17 @@ import {FaSearch} from 'react-icons/fa'
 import {Input, BookListUL, Spinner} from './components/lib'
 import {BookRow} from './components/book-row'
 // 🐨 import the client from './utils/api-client'
+import {client} from './utils/api-client.exercise'
+import {useEffect, useState} from 'react'
 
 function DiscoverBooksScreen() {
   // 🐨 add state for status ('idle', 'loading', or 'success'), data, and query
-  const data = null // 💣 remove this, it's just here so the example doesn't explode
+  const [status, setStatus] = useState('idle')
+  const [data, setData] = useState(null)
+  const [query, setQuery] = useState('')
+  const [queried, setQueried] = useState('')
+  // const data = null
+  // 💣 remove this, it's just here so the example doesn't explode
   // 🐨 you'll also notice that we don't want to run the search until the
   // user has submitted the form, so you'll need a boolean for that as well
   // 💰 I called it "queried"
@@ -27,11 +34,20 @@ function DiscoverBooksScreen() {
   const isSuccess = false
 
   function handleSearchSubmit(event) {
+    event.preventDefault()
+    const search = event.target.elements.search.value
+    if (!search) return
+    setQueried(true)
+    setQuery(search)
     // 🐨 call preventDefault on the event so you don't get a full page reload
     // 🐨 set the queried state to true
     // 🐨 set the query value which you can get from event.target.elements
     // 💰 console.log(event.target.elements) if you're not sure.
   }
+
+  useEffect(() => {
+    client(query).then()
+  }, [query, queried])
 
   return (
     <div
