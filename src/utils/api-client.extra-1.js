@@ -1,4 +1,5 @@
 function client(endpoint, customConfig = {}) {
+  
   const config = {
     method: 'GET',
     ...customConfig,

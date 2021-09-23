@@ -1,9 +1,10 @@
 function client(endpoint, customConfig = {}) {
-  window
-    .fetch(`${process.env.REACT_APP_API_URL}/${endpoint}`, {
-      method: 'GET',
-      ...customConfig,
-    })
+  const config = {
+    method: 'GET',
+    ...customConfig,
+  }
+  return window
+    .fetch(`${process.env.REACT_APP_API_URL}/${endpoint}`, config)
     .then(response => response.json())
   // 🐨 create the config you'll pass to window.fetch
   //    make the method default to "GET"

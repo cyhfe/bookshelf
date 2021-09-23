@@ -46,7 +46,14 @@ function DiscoverBooksScreen() {
   }
 
   useEffect(() => {
-    client(query).then()
+    client(`books?query=${encodeURIComponent(query)}`).then(
+      res => {
+        console.log(res)
+      },
+      err => {
+        console.log(err)
+      },
+    )
   }, [query, queried])
 
   return (
