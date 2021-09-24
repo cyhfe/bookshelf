@@ -9,13 +9,17 @@ import {BookRow} from './components/book-row'
 // 🐨 import the client from './utils/api-client'
 import {client} from './utils/api-client.exercise'
 import {useEffect, useState} from 'react'
+import {useAsync} from 'utils/hooks'
 
 function DiscoverBooksScreen() {
   // 🐨 add state for status ('idle', 'loading', or 'success'), data, and query
-  const [status, setStatus] = useState('idle')
-  const [data, setData] = useState(null)
+  // const [status, setStatus] = useState('idle')
+  // const [data, setData] = useState(null)
+  // const [error, setError] = useState(null)
+  const {data, error, isLoading, isSuccess, isError, run} = useAsync()
   const [query, setQuery] = useState('')
-  const [queried, setQueried] = useState('')
+  const [queried, setQueried] = useState(false)
+
   // const data = null
   // 💣 remove this, it's just here so the example doesn't explode
   // 🐨 you'll also notice that we don't want to run the search until the
@@ -30,8 +34,9 @@ function DiscoverBooksScreen() {
   // they haven't then return early (💰 this is what the queried state is for).
 
   // 🐨 replace these with derived state values based on the status.
-  const isLoading = false
-  const isSuccess = false
+  // const isLoading = status === 'loading'
+  // const isSuccess = status === 'success'
+  // const isError = status === 'error'
 
   function handleSearchSubmit(event) {
     event.preventDefault()
@@ -46,15 +51,9 @@ function DiscoverBooksScreen() {
   }
 
   useEffect(() => {
-    client(`books?query=${encodeURIComponent(query)}`).then(
-      res => {
-        console.log(res)
-      },
-      err => {
-        console.log(err)
-      },
-    )
-  }, [query, queried])
+    if (!queried) return
+    run(client(`books?query=${encodeURIComponent(query)}`))
+  }, [query, queried, run])
 
   return (
     <div
@@ -82,6 +81,13 @@ function DiscoverBooksScreen() {
           </label>
         </Tooltip>
       </form>
+
+      {isError ? (
+        <div css={{color: 'red'}}>
+          <p>There was an error:</p>
+          <pre>{error.message}</pre>
+        </div>
+      ) : null}
 
       {isSuccess ? (
         data?.books?.length ? (
